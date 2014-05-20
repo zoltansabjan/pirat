@@ -1,6 +1,6 @@
 filters, sorts, styles, ad-removes of PirateBay, working with proxies too// ==UserScript==
 // @name         πrat
-// @version      1.0.0.3
+// @version      1.0.0.4
 // @namespace    http://vnhub.net/
 // @include      /^(.*?)\/browse.*$/
 // @include      /^(.*?)\/search/.*$/
