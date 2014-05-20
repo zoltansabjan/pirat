@@ -1,6 +1,6 @@
 filters, sorts, styles, ad-removes of PirateBay, working with proxies too// ==UserScript==
 // @name         πrat
-// @version      1.0.0.2
+// @version      1.0.0.3
 // @namespace    http://vnhub.net/
 // @include      /^(.*?)\/browse.*$/
 // @include      /^(.*?)\/search/.*$/
@@ -10,9 +10,9 @@ filters, sorts, styles, ad-removes of PirateBay, working with proxies too// ==Us
 // @include      /^(.*?)\/top.*$/
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
 // @require      http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js
-// @downloadURL  
-// @updateURL    
-// @source       
+// @downloadURL  https://raw.githubusercontent.com/zoltansabjan/pirat/master/pirat.js
+// @updateURL    https://raw.githubusercontent.com/zoltansabjan/pirat/master/pirat.js
+// @source       https://github.com/zoltansabjan/pirat
 // @icon         http://vnhub.net/pirat/images/icon_pirat.png
 // @description  filters, sorts, styles, ad-removes of PirateBay, working with proxies too
 // @author       Zoltan Sabjan <zoltan.sabjan@gmail.com> http://vnhub.net/
