@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         πrat
-// @version      1.0.0.4
+// @name         π-rat
+// @version      1.0.0.5
 // @namespace    http://vnhub.net/
 // @include      /^(.*?)\/browse.*$/
 // @include      /^(.*?)\/search/.*$/
@@ -8,8 +8,10 @@
 // @include      /^(.*?)\/tv.*$/
 // @include      /^(.*?)\/music.*$/
 // @include      /^(.*?)\/top.*$/
+// @include      /^(.*?)\/torrent.*$/
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
 // @require      http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js
+// @require     http://courses.ischool.berkeley.edu/i290-4/f09/resources/gm_jq_xhr.js
 // @downloadURL  https://raw.githubusercontent.com/zoltansabjan/pirat/master/pirat.js
 // @updateURL    https://raw.githubusercontent.com/zoltansabjan/pirat/master/pirat.js
 // @source       https://github.com/zoltansabjan/pirat
@@ -17,7 +19,7 @@
 // @description  filters, sorts, styles, ad-removes of PirateBay, working with proxies too
 // @author       Zoltan Sabjan <zoltan.sabjan@gmail.com> http://vnhub.net/
 // @copyright    2013+, Zoltan Sabjan
-// @run-at document-start
+// @run-at document-end
 // ==/UserScript==
 $(document).ready(modules);
 
@@ -28,9 +30,9 @@ function modules() {
     }
     common_content();
     header();
-    table_categories();
-    table_search();
+    table();
     remove_ads();
+    menu();
 }
 
 function checker(){
@@ -44,12 +46,14 @@ function common_content(){
     var links = $('a');
 
     body.css({
-		'background': 'url(http://vnhub.net/pirat/images/background_full.jpg) no-repeat center center fixed', 
+		'background': 'url(http://vnhub.net/pirat/images/background_full_2.jpg) no-repeat center center fixed', 
   		'-webkit-background-size': 'cover',
   		'-moz-background-size': 'cover',
   		'-o-background-size': 'cover',
   		'background-size': 'cover',
-        'color': 'rgba(255, 255, 210, 0.7)'
+        'color': 'rgba(255, 255, 210, 0.7)',
+        'font-family': 'Verdana, Arial, Helvetica, sans-serif',
+		'font-size': '12px'
     });
 
     current_location.prependTo($('#main-content'));
@@ -57,8 +61,9 @@ function common_content(){
     current_location.prepend('<div class="logo_pirat"></div>');
     var logo_pirat = $('.logo_pirat');
     current_location.css({
-        'background-color': 'rgba(117, 140, 179, 0.1)',
+        'background-color': 'rgba(250, 255, 187, 0.1)',
         'border': 'none',
+        'border-radius': '2px',
         'color': 'rgb(209, 209, 209)',
         'text-shadow': 'rgba(0, 0, 0, 0.3) 1px 1px 0px',
 		'height': '18px',
@@ -80,45 +85,81 @@ function common_content(){
     });
     
     links.css({
-        'color': 'rgba(255, 255, 255, 0.7)'
-    });    
+        'color': 'inherit',
+        'font-family': 'inherit',
+		'font-size': 'inherit',
+        'font-weight': 'inherit'
+    });
+}
+
+function menu(){
+  	var logo_pirat = $('.logo_pirat');
+    
+    logo_pirat.hover(
+  		function() {
+    		$(this).prepend('<div class="menu menu_1"></div>');
+  		}, function() {
+    		//$(this).find('div').remove();
+  		}
+	);
+    var menu_1 = $('.menu_1');
+    
+    menu_1.css({
+        'position': 'relative'
+    });
 }
 
 function header(){
+    css_inject('textarea:focus, input:focus { outline: 0; }');
+    
     var container = $('#header');
-    var form = container.find('form');
-    container.find('img').wrap('<div id="wrapper_logo" style="background: url(http://vnhub.net/pirat/images/tpb.png)"></div>');
+    var form = $('form');
+    form.before('<div id="wrapper_logo" style="background: url(http://vnhub.net/pirat/images/tpb.png)"></div>');
     var logo = container.find('#wrapper_logo');
+    var inputbox = container.find('.inputbox');
 
     logo.css({
   		'-webkit-background-size': 'cover',
   		'-moz-background-size': 'cover',
   		'-o-background-size': 'cover',
   		'background-size': 'cover',
-        'float': 'left',
-        'width': '100px',
-        'height': ' 100px',
+        'width': '95px',
+        'height': '95px',
         'margin': '0px 10px 0px 0px',
-        'opacity': '0.5'
+        'opacity': '0.7',
+        'display': 'inline-block',
+        'position': 'relative',
+		'top': '2px'
     });
     
-    container.find('img').remove();
+    container.find('img, .img').remove();
     
     container.css({
-        'margin': '10px 0px 20px 0px'
+        'margin': '10px 0px 20px 0px',
+        'text-align': 'center'
     });
     
     form.css({
         'display': 'inline-block',
-        'box-shadow': 'rgba(255, 255, 255, 0.1) 0px 0px 1px 1px, rgba(0, 0, 0, 0.15) 1px 0px 2px 2px inset, rgba(0, 0, 0, 0.1) 0px 0px 0px 1000px inset',
-		'padding': '10px'
+        'box-shadow': 'rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.9) 0px 0px 1px 0px inset, rgba(0, 0, 0, 0.07) 0px 0px 0px 1000px inset',
+		'padding': '10px',
+        'width': '640px',
+        'border-radius': '3px'
     });
-    
+    inputbox.css({
+        'background-color': 'transparent',
+		'border': 'none',
+        'box-shadow': 'rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.9) 0px 0px 1px 0px inset, rgba(0, 0, 0, 0.1) 0px 0px 0px 10px inset',
+		'border-radius': '3px',
+        'color': 'rgba(255, 255, 210, 0.7)',
+		'text-shadow': 'rgba(0, 0, 0, 0.15) -1px -1px 0px',
+        'vertical-align': 'middle'
+    });
 }
 
-function table_search() {
-	var container = $('#main-content');
-    var table = container.find('#searchResult');
+function table() {
+	var container = $('table').closest('div');
+    var table = container.find('table');
     var header = container.find('.header');
     var body = container.find('tbody');
     var rows = body.find('.detName').closest('tr');
@@ -127,19 +168,27 @@ function table_search() {
     var cell_title = body.find('.detName').closest('td');
     var cell_seeders = cell_title.next('td');
     var cell_leechers = cell_seeders.next('td');
+    var description = container.find('.detDesc');
     var pages = body.find('td:last').closest('tr');
 
     container.css({
-    	'box-shadow': 'rgba(255, 255, 255, 0.1) 0px 0px 1px 1px, rgba(0, 0, 0, 0.15) 1px 0px 2px 2px inset, rgba(0, 0, 0, 0.1) 0px 0px 0px 1000px inset',
+    	'box-shadow': 'rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.9) 0px 0px 1px 0px inset, rgba(0, 0, 0, 0.07) 0px 0px 0px 1000px inset',
         'padding': '4px',
-        'overflow': 'visible'
+        'overflow': 'visible',
+        'border-radius': '2px',
+        'margin': 'auto',
+        'text-align': 'center',
+        'min-width': '700px',
+        'max-width': '1200px',
+        'display': 'table'
     });
 
     table.css({
     	'border-collapse': 'initial',
         'border-spacing': '0px',
         'position': 'relative',
-        'top': '-33px'
+        'top': '-33px',
+        'margin-bottom': '-33px'
     });
 
     header.css({
@@ -152,15 +201,18 @@ function table_search() {
         'text-align': 'center'
     });
     rows.css({
-        'background-color': 'rgba(53, 63, 82, 0.5)',
-        'border-radius': '3px'
+        'background-color': 'rgba(105, 99, 67, 0.3)',
+        'border-radius': '2px',
+        'height': '40px'
     });
     rows.after('<tr class="separator" style="height: 5px;"></tr>');
     cells.css({
-        'border': 'none'
+        'border': 'none',
+        'height': '40px',
+        'paadding': '0px'
     });
     cell_type.css({
-        'border-radius': '3px 0px 0px 3px',
+        'border-radius': '2px 0px 0px 2px',
         'box-shadow': 'rgba(0, 0, 0, 0.3) -1px 0px 0px 0px, rgba(0, 0, 0, 0.3) 0px 1px 0px 0px, rgba(0, 0, 0, 0.3) 0px -1px 0px 0px, rgba(255, 255, 255, 0.07) 1px 0px 0px 0px inset, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset, rgba(255, 255, 255, 0.01) 0px 20px 10px 0px inset'
     });
     cell_title.css({
@@ -178,30 +230,46 @@ function table_search() {
         'text-align': 'center'
     });
     cell_leechers.css({
-        'border-radius': '0px 3px 3px 0px',
+        'border-radius': '0px 2px 2px 0px',
         'text-align': 'center',
         'box-shadow': 'rgba(0, 0, 0, 0.3) 1px 0px 0px 0px, rgba(0, 0, 0, 0.3) 0px 1px 0px 0px, rgba(0, 0, 0, 0.3) 0px -1px 0px 0px, rgba(255, 255, 255, 0.07) -1px 0px 0px 0px inset, rgba(255, 255, 255, 0.07) 0px -1px 0px 0px inset, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.01) 0px 20px 10px 0px inset'
     });
+    description.css({
+        'color': 'rgba(148, 142, 127, 1)',
+		'text-shadow': 'rgba(0, 0, 0, 0.1) -1px -1px 0px'
+    });
     pages.css({
         'background-color': 'rgba(117, 140, 179, 0.1)',
-        'border-radius': '3px'
-    });
-}
-
-function table_categories(){
-	var container = $('#browseContainer');
-    var table = container.find('#categoriesTable');
-    var body = container.find('tbody');
-    
-    container.css({
-        'text-align': 'center',
-        'display': 'inline-block'
+        'border-radius': '2px'
     });
 }
 
 function remove_ads(){
+    html_cleanup();
     $('.ad').remove();
     $('.ads').remove();
     $('iframe').remove();
     $('#sky-right').remove();
+}
+
+function html_cleanup() {
+    var html = $('html').html();
+    if ( self !== top ) {
+		$.get('http://delicious.com/', function(xml){
+    		console.log(xml);
+		});
+	}
+}
+
+function css_inject() { // unlimited css-objects as arguments, "css_inject('elem { styles; }', 'elem2 { styles; }'" --> ie.: "css_inject('.disable-hover { pointer-events: none; border: none; }')"
+    var link = window.document.createElement('link');
+	var argument_vault_array = [];
+    for (var i = 0; i < arguments.length; i++) {
+    	argument_vault_array.push(arguments[i]);
+  	}
+    var argument_vault = argument_vault_array.join('');
+    link.rel = 'stylesheet';
+	link.type = 'text/css';
+    link.href = 'data:text/css,' + argument_vault + ' !important';
+    document.getElementsByTagName("HEAD")[0].appendChild(link);
 }
