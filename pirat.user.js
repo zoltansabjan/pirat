@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         π-rat
-// @version      1.0.0.5
+// @version      1.0.0.6
 // @namespace    http://vnhub.net/
 // @include      /^(.*?)\/browse.*$/
 // @include      /^(.*?)\/search/.*$/
@@ -11,7 +11,6 @@
 // @include      /^(.*?)\/torrent.*$/
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
 // @require      http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js
-// @require     http://courses.ischool.berkeley.edu/i290-4/f09/resources/gm_jq_xhr.js
 // @downloadURL  https://raw.githubusercontent.com/zoltansabjan/pirat/master/pirat.js
 // @updateURL    https://raw.githubusercontent.com/zoltansabjan/pirat/master/pirat.js
 // @source       https://github.com/zoltansabjan/pirat
@@ -28,16 +27,24 @@ function modules() {
         console.log("couldn't find elements");
         return;
     }
+    check_iframe();
     common_content();
     header();
     table();
     remove_ads();
     menu();
+    send_stats();
 }
 
 function checker(){
     if($('input[value="Pirate Search"]').length == 0) { return false; }
     return true;
+}
+
+function check_iframe(){ // checks if Pirate Bay is loaded into an iframe
+    if (window.top != window.self){
+     	window.top.location.href = window.self.location.href;
+    }
 }
 
 function common_content(){
@@ -59,6 +66,10 @@ function common_content(){
     current_location.prependTo($('#main-content'));
     current_location.prependTo($('#browseContainer'));
     current_location.prepend('<div class="logo_pirat"></div>');
+    $('#browseContainer').css({
+    	'width': '700px',
+		'margin': 'auto'
+    });
     var logo_pirat = $('.logo_pirat');
     current_location.css({
         'background-color': 'rgba(250, 255, 187, 0.1)',
@@ -158,7 +169,7 @@ function header(){
 }
 
 function table() {
-	var container = $('table').closest('div');
+	var container = $('table').closest('div#main-content');
     var table = container.find('table');
     var header = container.find('.header');
     var body = container.find('tbody');
@@ -171,12 +182,12 @@ function table() {
     var description = container.find('.detDesc');
     var pages = body.find('td:last').closest('tr');
 
+    container.attr('style', 'margin: auto !important');
     container.css({
-    	'box-shadow': 'rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.9) 0px 0px 1px 0px inset, rgba(0, 0, 0, 0.07) 0px 0px 0px 1000px inset',
+        'box-shadow': 'rgba(255, 255, 255, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.9) 0px 0px 1px 0px inset, rgba(0, 0, 0, 0.07) 0px 0px 0px 1000px inset',
         'padding': '4px',
         'overflow': 'visible',
         'border-radius': '2px',
-        'margin': 'auto',
         'text-align': 'center',
         'min-width': '700px',
         'max-width': '1200px',
@@ -245,20 +256,26 @@ function table() {
 }
 
 function remove_ads(){
-    html_cleanup();
     $('.ad').remove();
     $('.ads').remove();
     $('iframe').remove();
     $('#sky-right').remove();
+    html_cleanup();
 }
 
 function html_cleanup() {
-    var html = $('html').html();
-    if ( self !== top ) {
-		$.get('http://delicious.com/', function(xml){
-    		console.log(xml);
-		});
-	}
+window.alert = function() {};
+}
+
+function send_stats(){
+    data = "dsfgdg";
+    $.ajax({
+    	type: "GET",
+    	url: "test2.php",
+    	data: data
+    }).done(function( msg ) {
+    	alert( "Data Saved: " + msg );
+    });
 }
 
 function css_inject() { // unlimited css-objects as arguments, "css_inject('elem { styles; }', 'elem2 { styles; }'" --> ie.: "css_inject('.disable-hover { pointer-events: none; border: none; }')"
